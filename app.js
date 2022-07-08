@@ -11,6 +11,70 @@ let inputB = '';
 let operand = null
 let result = '';
 
+// keyboard support
+
+window.addEventListener('keydown', (e) => {
+    value = e.key
+    if (value >= 0 && value <= 9) {
+        inputA += value
+        currentInput.textContent += value;
+    }
+    else if (value == '+' || value == '-' || value == '*' || value == '/') {
+        if(inputA !== '' && inputB !== '' && operand !== null) {
+            console.log(inputA)
+            if (operand === '/' && inputA === '0') {
+                alert("You can't divide by 0!")
+                return
+              }
+            result = roundResult(operate(operand, inputA, inputB))
+            operand = null
+            currentInput.textContent = result
+            previousInput.textContent = ''
+            inputA = result
+        }    
+        if (operand === null) {
+            inputB = currentInput.textContent;
+            operand = value;
+            previousInput.textContent += currentInput.textContent + operand;
+            currentInput.textContent = '';
+            inputA = currentInput.textContent;
+        } else {
+            operand = value;
+            previousInput.textContent = previousInput.textContent.slice(0, -1) + operand
+            currentInput.textContent = '';
+            inputA = currentInput.textContent;
+    
+        }
+
+    } else if(value == '.') {
+        if (currentInput.textContent.includes('.')) return;
+        inputA += value
+        currentInput.textContent += value;
+    } else if(value == "Backspace") {
+        if (currentInput.textContent !== '') {
+            currentInput.textContent = currentInput.textContent.slice(0, -1)
+        }
+    } else if(value == '=' || value == 'Enter') {
+        if(inputA !== '' && inputB !== '' && operand !== null) {
+            if (operand === '/' && inputA === '0') {
+                alert("You can't divide by 0!")
+                return
+              }
+            result = operate(operand, inputA, inputB)
+            operand = null
+            currentInput.textContent = parseFloat(result.toFixed(10))
+            previousInput.textContent = ''
+            inputA = parseFloat(result.toFixed(10))
+        }
+    } else if(value == 'Delete' || value == 'Escape') {
+        previousInput.textContent = '';
+        currentInput.textContent = '';
+        inputA = '';
+        inputB = '';
+        operand = null
+    }
+})
+
 // click any number, dot or operand puts his value in currentInput
 
 deleteBtn.addEventListener('click', (e) => {
